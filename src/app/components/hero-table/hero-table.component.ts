@@ -16,4 +16,10 @@ export class HeroTableComponent implements OnInit {
     }
 
     ngOnInit() {}
+
+    doSearch(event: any) {
+        this.hero
+            .doSearch(event.target.value)
+            .subscribe((heroes: Hero[]) => (this.heroes = heroes));
+    }
 }

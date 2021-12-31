@@ -46,6 +46,7 @@ const LIMITS = [LIMIT_LOW, LIMIT_MID, LIMIT_HIGH];
     providedIn: 'root',
 })
 export class HeroService {
+    searchTerm = '';
     limits = LIMITS;
 
     heroes$: Observable<Hero[]> = this.http
@@ -60,4 +61,23 @@ export class HeroService {
         .pipe(map((res: any) => res.data.results));
 
     constructor(private http: HttpClient) {}
+
+    doSearch(searchTerm: string): Observable<Hero[]> {
+        this.searchTerm = searchTerm;
+
+        const params: any = {
+            apikey: environment.MARVEL_API.PUBLIC_KEY,
+            limit: `${LIMIT_LOW}`,
+            offset: `${0}`, // page * limit
+        };
+        if (this.searchTerm.length) {
+            params.nameStartsWith = this.searchTerm;
+        }
+
+        return this.http
+            .get(HERO_API, {
+                params,
+            })
+            .pipe(map((res: any) => res.data.results));
+    }
 }
